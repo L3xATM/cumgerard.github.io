@@ -1,4 +1,4 @@
-<!doctype html>
+-<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -13,6 +13,10 @@
 h1{font-size:clamp(2.5rem,7vw,5.5rem);line-height:.95;margin:18px 0;background:linear-gradient(90deg,#fff,#8bb7ff,#ff7183);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero p{max-width:760px;margin:16px auto;color:var(--muted);font-size:1.15rem}
 .btn{border:0;border-radius:14px;padding:13px 18px;font-weight:900;cursor:pointer;background:linear-gradient(90deg,var(--blue),var(--red));color:white;box-shadow:0 12px 30px #0005}
+.music-btn{display:block;margin:14px auto 0;border:1px solid #ffffff35;border-radius:14px;padding:10px 16px;font-weight:800;cursor:pointer;background:#ffffff10;color:var(--text)}
+.music-btn:hover{background:#ffffff1c}
+.music-player{position:fixed;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-10px;bottom:-10px}
+.music-player iframe{width:1px;height:1px;border:0}
 .scorebar{position:sticky;top:0;z-index:10;background:#07101fe8;backdrop-filter:blur(12px);border-bottom:1px solid #ffffff14}
 .scoreinner{max-width:1050px;margin:auto;padding:10px 24px;display:flex;justify-content:space-between;gap:12px;align-items:center}
 .score{font-size:1.25rem;font-weight:900} .progress{color:var(--muted);font-size:.9rem}
@@ -38,6 +42,10 @@ h1{font-size:clamp(2.5rem,7vw,5.5rem);line-height:.95;margin:18px 0;background:l
 <p>“De la Masia al aeropuerto, pasando por la hipoteca”: el examen definitivo de la vida de Gerard.</p>
 <p>Ocho rondas, preguntas para equipos y mucho margen para hacer el ridículo con dignidad.</p>
 <button class="btn" onclick="document.getElementById('quiz').scrollIntoView()">🏆 Empezar el quiz</button>
+<button class="music-btn" id="musicButton" type="button" onclick="toggleMusic()">🎵 Activar música</button>
+<div class="music-player" aria-hidden="true">
+  <iframe id="musicFrame" title="Música de fondo" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
 </div>
 </header>
 
@@ -697,133 +705,28 @@ h1{font-size:clamp(2.5rem,7vw,5.5rem);line-height:.95;margin:18px 0;background:l
 </section>
 </main>
 <footer>Ahora sí: que suene la música, que empiece la fiesta de verdad. 🎶</footer>
-<div class="music-bar" id="musicBar">
-  <div class="eq-bars" id="eqBars">
-    <span></span><span></span><span></span><span></span><span></span>
-  </div>
-  <div class="song-info">
-    <span>🎵 <strong>El himno del Barça</strong> sonando de fondo</span>
-    <button class="music-control-btn" id="togglePlayBtn" onclick="toggleMusic()">⏸ Pausar</button>
-  </div>
-</div>
-/* ═══════════════ MUSIC PLAYER BAR ═══════════════ */
-  .music-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(10,10,15,0.95);
-    border-top: 1px solid rgba(200,162,255,0.1);
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    z-index: 100;
-    backdrop-filter: blur(20px);
-    display: none;
-  }
-  .music-bar.visible { display: flex; }
 
-  .music-bar .song-info {
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .music-bar .song-info strong {
-    color: var(--accent);
-  }
-
-  .music-bar .eq-bars {
-    display: flex;
-    gap: 2px;
-    align-items: flex-end;
-    height: 18px;
-  }
-  .music-bar .eq-bars span {
-    width: 3px;
-    background: var(--accent);
-    border-radius: 2px;
-    animation: eq 0.8s ease-in-out infinite alternate;
-  }
-  .music-bar .eq-bars span:nth-child(1) { height: 6px; animation-delay: 0s; }
-  .music-bar .eq-bars span:nth-child(2) { height: 12px; animation-delay: 0.2s; }
-  .music-bar .eq-bars span:nth-child(3) { height: 8px; animation-delay: 0.4s; }
-  .music-bar .eq-bars span:nth-child(4) { height: 15px; animation-delay: 0.1s; }
-  .music-bar .eq-bars span:nth-child(5) { height: 10px; animation-delay: 0.3s; }
-
-  .music-control-btn {
-    background: rgba(200, 162, 255, 0.15);
-    border: 1px solid var(--accent);
-    color: var(--text);
-    border-radius: 20px;
-    padding: 4px 12px;
-    cursor: pointer;
-    font-size: 0.75rem;
-    font-family: 'Inter', sans-serif;
-    transition: all 0.3s;
-  }
-  .music-control-btn:hover {
-    background: var(--accent);
-    color: var(--bg-dark);
-  }
-
-  @keyframes eq {
-    from { height: 4px; }
-    to { height: 18px; }
-  }
-    <!-- ═══════════════════════════════════════════════ -->
-<!-- JAVASCRIPT & YOUTUBE API LOADER                -->
-<!-- ═══════════════════════════════════════════════ -->
-<script src="https://www.youtube.com/iframe_api"></script>
-<script>
-  // ── INTEGRACIÓN YOUTUBE AUDIO PLAYER ──
-  let player;
-  function onYouTubeIframeAPIReady() {
-    player = new YT.Player('youtube-audio-player', {
-      height: '0',
-      width: '0',
-      videoId: 'zDcBO_RVU58',
-      playerVars: {
-        'autoplay': 1,
-        'controls': 0,
-        'loop': 1,
-        'playlist': 'zDcBO_RVU58', // Requerido por YouTube para hacer bucles
-        'modestbranding': 1,
-        'rel': 0
-      },
-      events: {
-        'onStateChange': onPlayerStateChange
-      }
-    });
-  }
-
-  function onPlayerStateChange(event) {
-    const btn = document.getElementById('togglePlayBtn');
-    const eq = document.getElementById('eqBars');
-    if (event.data === YT.PlayerState.PLAYING) {
-      if(btn) btn.textContent = '⏸ Pausar';
-      if(eq) eq.style.opacity = '1';
-    } else {
-      if(btn) btn.textContent = '▶ Reproducir';
-      if(eq) eq.style.opacity = '0.3'; // El ecualizador se atenúa si se pausa
-    }
-  }
-
-  function toggleMusic() {
-    if (!player || typeof player.getPlayerState !== 'function') return;
-    const state = player.getPlayerState();
-    if (state === YT.PlayerState.PLAYING) {
-      player.pauseVideo();
-    } else {
-      player.playVideo();
-    }
-  }
-     document.getElementById('musicBar').classList.add('visible');
 <script>
 let score=0, done=0;
+let musicPlaying=false;
+const musicVideoId="Da0SrxIVQ8A";
+
+function toggleMusic(){
+  const frame=document.getElementById("musicFrame");
+  const button=document.getElementById("musicButton");
+  if(!musicPlaying){
+    frame.src=`https://www.youtube.com/embed/${musicVideoId}?autoplay=1&loop=1&playlist=${musicVideoId}`;
+    musicPlaying=true;
+    button.textContent="🔇 Parar música";
+    button.setAttribute("aria-label","Parar música de fondo");
+  }else{
+    frame.src="";
+    musicPlaying=false;
+    button.textContent="🎵 Activar música";
+    button.setAttribute("aria-label","Activar música de fondo");
+  }
+}
+
 function answer(btn, group){
   if(group.dataset.answered) return;
   group.dataset.answered="1";
