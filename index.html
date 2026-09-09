@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Megaquiz · 28º cumpleaños de Gerard</title>
+<style>
+:root{--bg:#07101f;--card:#0f1b31;--card2:#13213a;--text:#f6f8ff;--muted:#aab6cc;--blue:#1666ff;--red:#e62d46;--gold:#ffd166;--ok:#3ddc97;--bad:#ff6678;}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:radial-gradient(circle at 20% 0%,#172e5b 0,transparent 35%),linear-gradient(160deg,#07101f,#090d18 65%,#11192a);color:var(--text);line-height:1.5}
+.container{max-width:1050px;margin:auto;padding:24px}
+.hero{min-height:78vh;display:grid;place-items:center;text-align:center;padding:50px 20px}
+.badge{display:inline-block;padding:8px 14px;border:1px solid #ffffff25;border-radius:999px;background:#ffffff0c;color:#dbe6ff;font-weight:800;letter-spacing:.08em;font-size:.8rem}
+h1{font-size:clamp(2.5rem,7vw,5.5rem);line-height:.95;margin:18px 0;background:linear-gradient(90deg,#fff,#8bb7ff,#ff7183);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:760px;margin:16px auto;color:var(--muted);font-size:1.15rem}
+.btn{border:0;border-radius:14px;padding:13px 18px;font-weight:900;cursor:pointer;background:linear-gradient(90deg,var(--blue),var(--red));color:white;box-shadow:0 12px 30px #0005}
+.scorebar{position:sticky;top:0;z-index:10;background:#07101fe8;backdrop-filter:blur(12px);border-bottom:1px solid #ffffff14}
+.scoreinner{max-width:1050px;margin:auto;padding:10px 24px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.score{font-size:1.25rem;font-weight:900} .progress{color:var(--muted);font-size:.9rem}
+.rules,.punishments,.tie,.closing{background:#ffffff08;border:1px solid #ffffff12;border-radius:24px;padding:24px;margin:25px 0}
+.rules li{margin:8px 0} .round{margin:70px 0}
+.round-head{margin-bottom:24px} .round-kicker{color:var(--gold);font-size:.78rem;font-weight:900;letter-spacing:.16em}
+.round h2{font-size:clamp(1.8rem,4vw,3rem);margin:4px 0 5px} .round-head p{color:var(--muted);margin:0}
+.question{background:linear-gradient(145deg,var(--card),var(--card2));border:1px solid #ffffff14;border-radius:22px;padding:24px;margin:18px 0;box-shadow:0 12px 35px #0002}
+.q-label{color:#8bb7ff;font-weight:900;font-size:.85rem;letter-spacing:.04em} .question h3,.tie h3{margin:8px 0 18px;font-size:1.18rem}
+.options{display:grid;gap:10px} .option{text-align:left;border:1px solid #ffffff1b;background:#ffffff08;color:var(--text);padding:14px;border-radius:13px;cursor:pointer;font-size:1rem;transition:.18s}
+.option:hover{transform:translateY(-1px);background:#ffffff12} .option.correct{border-color:var(--ok);background:#3ddc9720} .option.wrong{border-color:var(--bad);background:#ff667820}
+.option:disabled{cursor:default;opacity:.9} .feedback{display:none;margin-top:16px;padding:15px;border-radius:14px;background:#0003} .feedback.show{display:block}
+.result{font-weight:1000;margin-bottom:5px} .answer{color:#dce6ff} .comment{color:var(--muted);font-style:italic;margin-top:7px}
+.tie p{color:var(--gold);font-weight:800} .closing{text-align:center;margin:80px 0} footer{text-align:center;color:#71809b;padding:30px}
+@media(max-width:600px){.container{padding:16px}.scoreinner{padding:10px 16px}.question{padding:18px}}
+</style>
+</head>
+<body>
+<header class="hero">
+<div>
+<span class="badge">🎉 MEGAQUIZ · 28 AÑOS 🎉</span>
+<h1>Feliz 28,<br>Gerard</h1>
+<p>“De la Masia al aeropuerto, pasando por la hipoteca”: el examen definitivo de la vida de Gerard.</p>
+<p>Ocho rondas, preguntas para equipos y mucho margen para hacer el ridículo con dignidad.</p>
+<button class="btn" onclick="document.getElementById('quiz').scrollIntoView()">🏆 Empezar el quiz</button>
+</div>
+</header>
+
+<div class="scorebar"><div class="scoreinner"><div class="score">Puntos: <span id="score">0</span></div><div class="progress"><span id="done">0</span> / 50 respondidas</div></div></div>
+
+<main id="quiz" class="container">
+<section class="rules">
+<h2>🎯 Reglas rápidas</h2>
+<ul>
+<li>Formad 2, 3 o 4 equipos. Da igual el número, lo que importa es la épica.</li>
+<li>Rondas 1 a 7: cada pregunta acertada vale <strong>10 puntos</strong>.</li>
+<li>Ronda 8: el primer equipo en responder y acertar se lleva <strong>15 puntos</strong>.</li>
+<li>Si el presentador considera un fallo “de cajón”, toca castigo cómico.</li>
+<li>Los empates se resuelven con las preguntas de desempate.</li>
+<li>El equipo campeón se lleva el título de <strong>“Campeones del Palco Blaugrana 2026”</strong>.</li>
+</ul>
+</section>
+<section class="punishments">
+<h2>😂 Castigos cómicos</h2>
+<ol>
+<li><strong>El Brindis del Culé</strong> — Ponerse en pie, brindar y cantar o tararear los primeros versos del himno del Barça.</li>
+<li><strong>La Pose de Fotolog</strong> — Foto de morritos y flash estilo 2006 y mandarla al grupo de WhatsApp.</li>
+<li><strong>El Tango de la Hipoteca</strong> — Bailar 10 segundos fingiendo firmar papeles serios de banco.</li>
+</ol>
+</section>
+
+    <section class="round">
+      <div class="round-head">
+        <span class="round-kicker">RONDA</span>
+        <h2>🔵🔴 RONDA 1: SANGRE BLAUGRANA Y NOCHES DE CHAMPIONS</h2>
+        <p>Historia, leyendas y momentos que ponen la piel de gallina.</p>
+      </div>
+      
+    <article class="question" data-number="1">
+      <div class="q-label">Pregunta 1.1</div>
+      <h3>¿En qué año se fundó el FC Barcelona?</h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">A) 1899</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) 1902</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) 1905</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) El mismo año en que se inventó el vermut con gas (spoiler: no)</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: A) 1899**</div>
+        <div class="comment">*&quot;126 años de historia... y Gerard se sabe cada uno de memoria.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="2">
+      <div class="q-label">Pregunta 1.2</div>
+      <h3>¿Cuántas Copas de Europa / Champions League ha ganado el Barça en su historia?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) 3</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) 4</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">C) 5</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Las suficientes para forrar el Camp Nou entero de banderines</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: C) 5** (1992, 2006, 2009, 2011 y 2015)</div>
+        <div class="comment">*&quot;Cinco orejonas. Ni las orejas de Gerard después de una noche de fiesta han visto tanto.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="3">
+      <div class="q-label">Pregunta 1.3</div>
+      <h3>¿Quién marcó el gol que dio al Barça su primera Copa de Europa, en la mítica final de Wembley 1992?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Hristo Stoichkov</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Ronald Koeman</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Michael Laudrup</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) El larguero, que ese día jugaba de suplente</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) Ronald Koeman**, de falta</div>
+        <div class="comment">*&quot;Un gol tan bonito que hasta los ingleses aplaudieron sin querer.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="4">
+      <div class="q-label">Pregunta 1.4</div>
+      <h3>¿Cuántos Balones de Oro tiene Leo Messi en su vitrina?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) 6</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) 7</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">C) 8</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Ya ni él lleva la cuenta</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: C) 8**</div>
+        <div class="comment">*&quot;Ocho. Los mismos que copas de vermut que Gerard jura que se va a tomar &#x27;solo una&#x27;.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="5">
+      <div class="q-label">Pregunta 1.5</div>
+      <h3>Este jugador, formado fuera de la Masia pero con varias temporadas vistiendo la camiseta blaugrana, se llevó el Balón de Oro masculino más reciente (edición 2025) ya en las filas del PSG. ¿Quién es?</h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">A) Ousmane Dembélé</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) Neymar Jr.</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Antoine Griezmann</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Piqué, por aguantar los memes con estoicismo</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: A) Ousmane Dembélé**</div>
+        <div class="comment">*&quot;Se fue de Can Barça y volvió con un Balón de Oro bajo el brazo. Menudo despecho más productivo.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="6">
+      <div class="q-label">Pregunta 1.6</div>
+      <h3>¿Qué jugadora culé conquistó en 2025 su TERCER Balón de Oro femenino consecutivo, igualando en la lista de campeonas consecutivas a leyendas como Johan Cruyff y Michel Platini?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Alexia Putellas</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Aitana Bonmatí</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Jenni Hermoso</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Su madre, por aguantar los nervios en la grada</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) Aitana Bonmatí**</div>
+        <div class="comment">*&quot;Tres seguidos. A este ritmo va a necesitar una vitrina nueva antes que Gerard un armario para la ropa de invierno.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="7">
+      <div class="q-label">Pregunta 1.7</div>
+      <h3>¿Cómo se llama la cantera del FC Barcelona, cuna de leyendas como Messi, Xavi e Iniesta?</h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">A) La Masía</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) El Vivero</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) La Fábrica</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) El cuarto de Gerard cuando echaba partidas eternas a la Play</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: A) La Masía**</div>
+        <div class="comment">*&quot;De ahí salieron genios del fútbol. Del cuarto de Gerard solo salió un récord personal en el FIFA.&quot;*</div>
+      </div>
+    </article>
+    
+    </section>
+    
+    <section class="round">
+      <div class="round-head">
+        <span class="round-kicker">RONDA</span>
+        <h2>✈️ RONDA 2: PASAPORTE, ESCAPADAS Y AEROPUERTOS</h2>
+        <p>Geografía, banderas, culturas y las mil batallitas de viaje de Gerard.</p>
+      </div>
+      
+    <article class="question" data-number="8">
+      <div class="q-label">Pregunta 2.1</div>
+      <h3>Contando todos sus territorios de ultramar, ¿qué país tiene más zonas horarias en el mundo?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Rusia</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) Estados Unidos</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">C) Francia</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) España, pero solo en las sobremesas eternas</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: C) Francia** (12 zonas horarias)</div>
+        <div class="comment">*&quot;En Francia siempre es la hora de comer en algún sitio. Como en la vida de Gerard, básicamente.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="9">
+      <div class="q-label">Pregunta 2.2</div>
+      <h3>En la mayoría de aerolíneas, ¿cuál suele ser el límite de peso estándar para una maleta facturada en clase turista antes de que te claven un cargo extra?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) 15 kg</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) 20 kg</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">C) 23 kg</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Da igual el límite, la maleta de Gerard siempre pesa 2 kg de más</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: C) 23 kg**</div>
+        <div class="comment">*&quot;23 kilos... y Gerard siempre se las apaña para llevar 25 &#x27;porque cabía&#x27;.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="10">
+      <div class="q-label">Pregunta 2.3</div>
+      <h3>¿En qué famosa avenida parisina remata el Arco del Triunfo, típica escapada de fin de semana?</h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">A) Champs-Élysées</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) Boulevard Saint-Germain</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Rue de Rivoli</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) La Diagonal, pero en francés y con más glamour</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: A) Champs-Élysées**</div>
+        <div class="comment">*&quot;La avenida más elegante de Europa... y aun así Gerard encuentra ahí un bar de tapas.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="11">
+      <div class="q-label">Pregunta 2.4</div>
+      <h3>¿Qué gesto, inofensivo en España, se considera de mala educación en una mesa japonesa?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Dejar propina</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Clavar los palillos verticalmente en el arroz</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Pedir la cuenta</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Hablar de fútbol en la mesa (eso ahí sí se permite)</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) Clavar los palillos verticalmente en el arroz** (recuerda a un ritual funerario)</div>
+        <div class="comment">*&quot;Un detalle cultural que Gerard seguro ya se aprendió a la primera, porque para eso es el responsable del grupo.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="12">
+      <div class="q-label">Pregunta 2.5</div>
+      <h3>¿Cuál de estos NO es un país real donde Gerard podría &quot;perder&quot; una escala de avión?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Kirguistán</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) Surinam</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">C) Andorlandia</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Yibuti</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: C) Andorlandia** (inventado; los otros tres son países reales)</div>
+        <div class="comment">*&quot;Andorlandia no existe... aunque suena justo al tipo de sitio raro donde Gerard perdería una conexión.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="13">
+      <div class="q-label">Pregunta 2.6</div>
+      <h3>Como norma general recomendada para vuelos internacionales, ¿cuántas horas antes conviene llegar al aeropuerto?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) 1 hora</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) 2 horas</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">C) 3 horas</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) El tiempo que tarde Gerard en organizar a todo el grupo y contar las maletas dos veces</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: C) 3 horas**</div>
+        <div class="comment">*&quot;Y aun con 3 horas de margen, alguien del grupo siempre llega corriendo con el café en la mano.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="14">
+      <div class="q-label">Pregunta 2.7</div>
+      <h3>¿Qué país tiene la única bandera nacional del mundo que no es rectangular?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Suiza</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Nepal</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Bélgica</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Cataluña, que ondea siempre en el corazón de Gerard</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) Nepal** (su bandera tiene forma de dos triángulos apilados)</div>
+        <div class="comment">*&quot;Una bandera con forma propia, como el carácter de Gerard: único e imposible de encajar en un molde.&quot;*</div>
+      </div>
+    </article>
+    
+    </section>
+    
+    <section class="round">
+      <div class="round-head">
+        <span class="round-kicker">RONDA</span>
+        <h2>🛡️ RONDA 3: EL &quot;PAPÁ&quot; DEL GRUPO</h2>
+        <p>Situaciones hipotéticas sobre el rol de Gerard cuidando de todos.)</p>
+      </div>
+      
+    <article class="question" data-number="15">
+      <div class="q-label">Pregunta 3.1</div>
+      <h3>Son las 3 de la madrugada y a alguien del grupo se le ha quedado el móvil sin batería en mitad de la ciudad. ¿Qué hace Gerard?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Se va a dormir, ya aparecerá</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Activa el &quot;modo búsqueda&quot;, llama a todo el grupo y no descansa hasta encontrarle</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Pone un GIF de preocupación en el grupo de WhatsApp y ya</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Le manda un email formal preguntando su ubicación</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B**</div>
+        <div class="comment">*&quot;Gerard tiene más protocolo de emergencia que un aeropuerto internacional.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="16">
+      <div class="q-label">Pregunta 3.2</div>
+      <h3>En un viaje de grupo, ¿quién es más probable que lleve encima tiritas, paracetamol y un cargador portátil &quot;por si acaso&quot;?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) El más joven del grupo</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Gerard, obviamente</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Nadie, todos improvisan</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) El del hotel</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B**</div>
+        <div class="comment">*&quot;Su mochila es oficialmente una farmacia de guardia con ruedines.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="17">
+      <div class="q-label">Pregunta 3.3</div>
+      <h3>Alguien rompe a llorar en una fiesta por una tontería. ¿Cuál es la reacción más &quot;Gerard&quot; posible?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Ignorarlo y seguir bailando</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) Grabarlo para el grupo de recuerdos</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">C) Sentarse a su lado, escuchar, y luego soltar un chiste para levantarle el ánimo</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Llamar a un taxi y mandarlo a casa sin más</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: C**</div>
+        <div class="comment">*&quot;Terapeuta de guardia sin cobrar por hora. Ese es Gerard.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="18">
+      <div class="q-label">Pregunta 3.4</div>
+      <h3>Llega la hora de pagar la cuenta después de una noche larga. ¿Qué probabilidad hay de que Gerard acabe calculando &quot;quién debe qué&quot; con precisión de contable?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) 0%, eso nunca pasa</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) Un 50%, según el humor del día</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">C) Un 100%, es su superpoder</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Solo si hay una calculadora cerca</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: C**</div>
+        <div class="comment">*&quot;Con Excel mental incluido y descuento por rondas invitadas.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="19">
+      <div class="q-label">Pregunta 3.5</div>
+      <h3>El grupo se pierde en una ciudad nueva sin cobertura. ¿Quién saca el mapa de papel de repuesto que &quot;por si acaso&quot; metió en la mochila?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Nadie, usan el móvil sin batería</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Gerard, con su kit de supervivencia</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Preguntan a un local y listos</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Se dejan llevar y ya está</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B**</div>
+        <div class="comment">*&quot;El Bear Grylls del grupo, pero con más don de gentes y menos bichos de cena.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="20">
+      <div class="q-label">Pregunta 3.6</div>
+      <h3>Si el grupo entregara un &quot;Óscar&quot; a quien más veces ha dicho la frase &quot;tranquilos, yo me encargo&quot;, ¿quién se lo llevaría sin discusión?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) El camarero del bar de siempre</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Gerard, indiscutiblemente</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) El grupo de WhatsApp entero</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Nadie, cada uno se apaña solo</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B**</div>
+        <div class="comment">*&quot;Nominado, ganador y presentador de la gala. Todo en uno.&quot;*</div>
+      </div>
+    </article>
+    
+    </section>
+    
+    <section class="round">
+      <div class="round-head">
+        <span class="round-kicker">RONDA</span>
+        <h2>💿 RONDA 4: NOSTALGIA DE LOS 2000 Y FOTOLOG</h2>
+        <p>Música, series, tecnología retro y la cultura pop que marcó una época.</p>
+      </div>
+      
+    <article class="question" data-number="21">
+      <div class="q-label">Pregunta 4.1</div>
+      <h3>¿Qué red tipo blog de fotos fue furor a mediados de los 2000, famosa por el contador de comentarios (las temidas &quot;K&quot;)?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Instagram</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Fotolog</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) MySpace</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Tuenti</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) Fotolog**</div>
+        <div class="comment">*&quot;Subir una foto y esperar los comentarios era más emocionante que un gol en el último minuto.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="22">
+      <div class="q-label">Pregunta 4.2</div>
+      <h3>En el MSN Messenger, ¿qué anunciaba ese sonido característico de notificación que hacía dar un salto en la silla?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Que alguien te había agregado</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Que te había llegado un mensaje nuevo</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Que se había caído la conexión</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Que tu &quot;nick&quot; con emoticonos había caducado</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) Que te había llegado un mensaje nuevo**</div>
+        <div class="comment">*&quot;Ese sonido activaba más adrenalina que un derbi en el último suspiro.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="23">
+      <div class="q-label">Pregunta 4.3</div>
+      <h3>¿Cómo se llamaba el reproductor portátil de Apple que revolucionó cómo llevábamos la música antes de Spotify?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) iPad</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) iPod</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Walkman</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Discman</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) iPod**</div>
+        <div class="comment">*&quot;Antes de las playlists, había que currarse el &#x27;clic, clic, clic&#x27; de la rueda para elegir canción.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="24">
+      <div class="q-label">Pregunta 4.4</div>
+      <h3>¿Cuál de estas videoconsolas marcó infancias y adolescencias enteras con clásicos del fútbol virtual?</h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">A) PlayStation 2</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) Xbox Series X</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Nintendo Switch</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) La Game Boy Color de la prima, que nunca soltaba el mando</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: A) PlayStation 2**</div>
+        <div class="comment">*&quot;Horas y horas de partidos virtuales que prepararon a Gerard para las tertulias futboleras de verdad.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="25">
+      <div class="q-label">Pregunta 4.5</div>
+      <h3>¿Cuál de estos grupos NO pertenece a la escena pop-rock española de los 2000 que sonaba en cualquier fiesta de instituto?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) El Canto del Loco</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) La Oreja de Van Gogh</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Estopa</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">D) Rosalía</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: D) Rosalía** (irrumpió después, ya en la década de 2010)</div>
+        <div class="comment">*&quot;Rosalía todavía no había nacido musicalmente cuando estos otros ya llenaban pabellones.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="26">
+      <div class="q-label">Pregunta 4.6</div>
+      <h3>De estos formatos de vídeo, ¿cuál fue el gran salto tecnológico de la década, dejando atrás al VHS?</h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">A) El DVD</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) El Blu-ray</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) El USB</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) El disquete</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: A) El DVD**</div>
+        <div class="comment">*&quot;Rebobinar la cinta era historia. Ahora el drama era rayar el DVD el día antes de devolverlo al videoclub.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="27">
+      <div class="q-label">Pregunta 4.7</div>
+      <h3>¿Cuál de estas series españolas de los 2000 NO trata sobre dramas adolescentes ni de instituto?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Física o Química</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) El Internado</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Los Serrano</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">D) La Casa de Papel</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: D) La Casa de Papel** (se estrenó en 2017, ya en la década siguiente)</div>
+        <div class="comment">*&quot;El Profesor y compañía llegaron después. En los 2000 los dramas eran de pasillo de instituto, no de atracos.&quot;*</div>
+      </div>
+    </article>
+    
+    </section>
+    
+    <section class="round">
+      <div class="round-head">
+        <span class="round-kicker">RONDA</span>
+        <h2>🦴 RONDA 5: LA CRISIS DE LOS 28</h2>
+        <p>Humor sobre eso tan bonito que llaman &quot;hacerse mayor&quot;.</p>
+      </div>
+      
+    <article class="question" data-number="28">
+      <div class="q-label">Pregunta 5.1</div>
+      <h3>¿Cuál es el síntoma inequívoco de que ya no tienes 20 años al levantarte de una silla baja?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Silencio absoluto</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Un &quot;ugh&quot; o crujido espontáneo</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Aplausos del público</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Nada, sigues siendo de goma</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B**</div>
+        <div class="comment">*&quot;El cuerpo empieza a narrar sus propios movimientos. Bienvenido al club, Gerard.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="29">
+      <div class="q-label">Pregunta 5.2</div>
+      <h3>A partir de los 28, ¿cuántos días puede llegar a durar una resaca &quot;de las buenas&quot; tras una noche de exceso?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Ninguno, sigue siendo cero</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) 1 día</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">C) De 2 a 3 días, con flashbacks incluidos</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Una semana completa, con crisis existencial de regalo</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: C**</div>
+        <div class="comment">*&quot;Lo que antes se curaba con un bocadillo, ahora necesita reflexión, siesta y un poco de paz espiritual.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="30">
+      <div class="q-label">Pregunta 5.3</div>
+      <h3>Al elegir un electrodoméstico nuevo, ¿qué es lo primero que mira ahora un veintiochoañero responsable?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) El color que combine con la cocina</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) La eficiencia energética y las opiniones de internet</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Si tiene Bluetooth</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Nada, se lo dice su madre</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B**</div>
+        <div class="comment">*&quot;Comparar etiquetas energéticas es el nuevo deporte de riesgo de los adultos.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="31">
+      <div class="q-label">Pregunta 5.4</div>
+      <h3>¿A qué hora empieza a sonar ahora la alarma interna de &quot;vámonos ya a dormir&quot;?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) A las 3 de la madrugada, como siempre</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) A las 00:00, con reticencia</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">C) Sobre las 23:00, sin discusión posible</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) En cuanto se pone el sol</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: C**</div>
+        <div class="comment">*&quot;El body ya no negocia. A las 23:00 se apagan las luces, haya fiesta o no.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="32">
+      <div class="q-label">Pregunta 5.5</div>
+      <h3>¿Qué palabra, antes desconocida, empieza a colarse en las conversaciones de después de cenar entre amigos de esta edad?</h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">A) &quot;Hipoteca&quot;</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) &quot;Reguetón&quot;</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) &quot;Selfie&quot;</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) &quot;Examen&quot;</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: A) &quot;Hipoteca&quot;**</div>
+        <div class="comment">*&quot;De hablar de la última canción del verano a hablar de tipos de interés. Así, sin avisar.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="33">
+      <div class="q-label">Pregunta 5.6</div>
+      <h3>Al cumplir 28, ¿qué es lo más probable que le regalen a Gerard sus amigos como broma sobre &quot;hacerse mayor&quot;?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Un patinete eléctrico</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Un cojín cervical o un vale para el fisio</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Una consola nueva</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Entradas para un festival de música</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B**</div>
+        <div class="comment">*&quot;El regalo más cariñoso y más cruel al mismo tiempo. Feliz cumple, espalda.&quot;*</div>
+      </div>
+    </article>
+    
+    </section>
+    
+    <section class="round">
+      <div class="round-head">
+        <span class="round-kicker">RONDA</span>
+        <h2>⚽ RONDA 6: FÚTBOL INTERNACIONAL Y DEBATES DE BAR</h2>
+        <p>Curiosidades, estadios míticos y la actualidad futbolera más candente.</p>
+      </div>
+      
+    <article class="question" data-number="34">
+      <div class="q-label">Pregunta 6.1</div>
+      <h3>¿Cuál es, oficialmente, el estadio de fútbol con mayor capacidad del planeta?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) El nuevo Camp Nou, una vez terminado</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) El Rungrado 1st of May Stadium, en Corea del Norte</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Wembley, en Londres</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) El Maracaná, en Río de Janeiro</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) Rungrado 1st of May Stadium** (unos 114.000 espectadores)</div>
+        <div class="comment">*&quot;Un estadio tan grande que hasta a Gerard le costaría encontrar sitio para las mochilas de todo el grupo.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="35">
+      <div class="q-label">Pregunta 6.2</div>
+      <h3>¿Qué selección ha ganado más Copas del Mundo masculinas en la historia?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Alemania</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) Argentina</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">C) Brasil</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Italia</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: C) Brasil**, con 5 títulos (1958, 1962, 1970, 1994 y 2002)</div>
+        <div class="comment">*&quot;El rey indiscutible del Mundial... aunque este año el trono tuvo visita española.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="36">
+      <div class="q-label">Pregunta 6.3</div>
+      <h3>Este mismo 2026 se disputó el Mundial en Estados Unidos, México y Canadá. ¿Qué selección se proclamó campeona tras vencer 1-0 a Argentina en la final?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Francia</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) España</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Portugal</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Inglaterra</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) España**, con gol decisivo de Ferrán Torres en la prórroga</div>
+        <div class="comment">*&quot;Un Mundial ganado a lo grande y bien fresquito en la memoria. Como para no acordarse en la fiesta de Gerard.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="37">
+      <div class="q-label">Pregunta 6.4</div>
+      <h3>¿Cuál de estos futbolistas NO ha levantado nunca una Copa del Mundo con su selección?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Lionel Messi</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Cristiano Ronaldo</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Diego Maradona</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Pelé</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) Cristiano Ronaldo**</div>
+        <div class="comment">*&quot;El único de la lista al que le falta esa vitrina. Y ya van unos cuantos Mundiales de espera.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="38">
+      <div class="q-label">Pregunta 6.5</div>
+      <h3>¿Qué delantero francés igualó en el Mundial 2026 el histórico récord de Gerd Müller (1970) al marcar 10 goles en una sola edición del torneo?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Antoine Griezmann</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Kylian Mbappé</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Ousmane Dembélé</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Karim Benzema</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) Kylian Mbappé**</div>
+        <div class="comment">*&quot;Diez goles en un solo Mundial. A ese ritmo, hasta Gerard se plantea ficharlo para el equipo de la oficina.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="39">
+      <div class="q-label">Pregunta 6.6</div>
+      <h3>¿Cómo se apoda popularmente al trofeo de la Champions League por sus dos características asas?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) La Copa de Europa</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) La Orejona</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) El Balón de Oro</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) La Bota de Oro</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) La Orejona**</div>
+        <div class="comment">*&quot;Un apodo tan cariñoso que hasta suena a mote de abuela. Y aun así, es el trofeo más deseado del fútbol de clubes.&quot;*</div>
+      </div>
+    </article>
+    
+    </section>
+    
+    <section class="round">
+      <div class="round-head">
+        <span class="round-kicker">RONDA</span>
+        <h2>🍷 RONDA 7: GASTRONOMÍA, VERMUT Y MARIDAJE</h2>
+        <p>Para el paladar viajero y amante del buen tapeo.</p>
+      </div>
+      
+    <article class="question" data-number="40">
+      <div class="q-label">Pregunta 7.1</div>
+      <h3>Además del vino, ¿cuál es el ingrediente estrella para preparar un buen vermut casero?</h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">A) Hierbas y especias maceradas</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) Solo hielo</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Zumo de naranja</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Leche condensada</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: A) Hierbas y especias maceradas**</div>
+        <div class="comment">*&quot;El secreto está en la maceración... como el buen humor de Gerard, que también necesita su tiempo.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="41">
+      <div class="q-label">Pregunta 7.2</div>
+      <h3>En la tradición del vermut de mediodía tan catalana, ¿qué acompañamiento es casi obligatorio en la mesa?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) Una tabla de sushi</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Aceitunas, patatas fritas o unas bravas</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Un helado</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Un plato de pasta</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) Aceitunas, patatas fritas o unas bravas**</div>
+        <div class="comment">*&quot;El vermut sin su picoteo es como el Barça sin afición: técnicamente posible, pero muy triste.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="42">
+      <div class="q-label">Pregunta 7.3</div>
+      <h3>¿De qué país es originario el sushi, plato favorito de cualquier viajero foodie que se precie?</h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">A) China</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">B) Japón</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Corea del Sur</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Tailandia</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: B) Japón**</div>
+        <div class="comment">*&quot;Un clásico en cualquier lista de restaurantes que Gerard tiene guardada &#x27;para cuando volvamos a viajar&#x27;.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="43">
+      <div class="q-label">Pregunta 7.4</div>
+      <h3>¿Cómo se llama el plato italiano a base de arroz cremoso, ideal para maridar con un buen vino tinto?</h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">A) Risotto</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) Paella</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Gnocchi</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Panettone</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: A) Risotto**</div>
+        <div class="comment">*&quot;Cremoso, reconfortante y con mil variantes. El plato equivalente a un abrazo de Gerard, básicamente.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="44">
+      <div class="q-label">Pregunta 7.5</div>
+      <h3>¿Qué tapa catalana, tan sencilla como sagrada, consiste en pan con tomate, aceite de oliva y sal?</h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">A) Pa amb tomàquet</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">B) Croquetas</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">C) Pulpo a la gallega</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">D) Tortilla de patatas</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **Respuesta correcta: A) Pa amb tomàquet**</div>
+        <div class="comment">*&quot;Tres ingredientes, cero discusión posible: es sagrado y punto.&quot;*</div>
+      </div>
+    </article>
+    
+    </section>
+    
+    <section class="round">
+      <div class="round-head">
+        <span class="round-kicker">RONDA</span>
+        <h2>⚡ RONDA 8: VERDADERO O FALSO EXPRÉS</h2>
+        <p>Responded rápido en equipo. El primero en acertar se lleva los puntos extra.</p>
+      </div>
+      
+    <article class="question" data-number="45">
+      <div class="q-label">Afirmación 8.1: Un grupo de flamencos se llama &quot;flamboyance&quot; en inglés.</div>
+      <h3></h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">VERDADERO</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">FALSO</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **VERDADERO**</div>
+        <div class="comment">*&quot;Un dato tan absurdo como precioso. Justo el tipo de cosa que Gerard suelta en una sobremesa.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="46">
+      <div class="q-label">Afirmación 8.2: El nuevo Camp Nou, una vez terminado, superará los 100.000 espectadores de capacidad.</div>
+      <h3></h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">VERDADERO</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">FALSO</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **VERDADERO** (se prevén unos 105.000 asientos)</div>
+        <div class="comment">*&quot;Sitio de sobra para toda la parroquia... y hasta para las excusas de Gerard cuando llega tarde.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="47">
+      <div class="q-label">Afirmación 8.3: El FC Barcelona fue fundado exclusivamente por socios catalanes, sin ningún extranjero de por medio.</div>
+      <h3></h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">VERDADERO</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">FALSO</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **FALSO** — lo fundó el suizo Joan Gamper junto a un grupo internacional de futbolistas.</div>
+        <div class="comment">*&quot;Internacional desde el minuto uno. El Barça siempre tuvo pasaporte múltiple, como las maletas de Gerard.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="48">
+      <div class="q-label">Afirmación 8.4: La miel caduca igual que cualquier otro alimento, normalmente en menos de un año.</div>
+      <h3></h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">VERDADERO</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">FALSO</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **FALSO** — bien conservada, la miel prácticamente no caduca nunca.</div>
+        <div class="comment">*&quot;La miel es inmortal. Ojalá las resacas de después de los 28 tuvieran esa misma resistencia.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="49">
+      <div class="q-label">Afirmación 8.5: El Barça ganó su primera Copa de Europa / Champions League en el siglo XIX.</div>
+      <h3></h3>
+      <div class="options"><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">VERDADERO</button><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">FALSO</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **FALSO** — fue en 1992, ya en pleno siglo XX.</div>
+        <div class="comment">*&quot;En el siglo XIX el Barça ni existía todavía. Un poco de respeto al calendario, por favor.&quot;*</div>
+      </div>
+    </article>
+    
+    <article class="question" data-number="50">
+      <div class="q-label">Afirmación 8.6: Durante fuertes turbulencias en un avión, lo más seguro es mantener siempre el cinturón abrochado.</div>
+      <h3>---</h3>
+      <div class="options"><button class="option" data-correct="true" onclick="answer(this, this.parentElement)">VERDADERO</button><button class="option" data-correct="false" onclick="answer(this, this.parentElement)">FALSO</button></div>
+      <div class="feedback" aria-live="polite">
+        <div class="result"></div>
+        <div class="answer"><strong>Respuesta:</strong> **VERDADERO**</div>
+        <div class="comment">*&quot;El consejo de seguridad número uno de cualquier viajero experimentado... y Gerard lo repite antes de cada despegue.&quot;*</div>
+      </div>
+    </article>
+    
+    </section>
+    
+<section class="round">
+<div class="round-head"><span class="round-kicker">FINAL</span><h2>🔢 Preguntas de desempate</h2><p>Gana quien más se acerque a la cifra real sin pasarse.</p></div>
+<article class="tie"><div class="q-label">Desempate 1: ¿Cuál será la capacidad total del nuevo Camp Nou una vez esté completamente terminado?</div><h3></h3><p>🎯 **Respuesta aproximada: 105.000 espectadores** (se admite un margen entre 103.000 y 107.000)</p></article><article class="tie"><div class="q-label">Desempate 2: ¿Cuántos kilómetros hay, por carretera, entre Barcelona y Madrid?</div><h3></h3><p>🎯 **Respuesta aproximada: 620 km** (se admite un margen entre 590 y 650 km)</p></article><article class="tie"><div class="q-label">Desempate 3: ¿Cuántos goles marcó Leo Messi en toda su etapa como jugador del FC Barcelona, contando todas las competiciones?</div><h3></h3><p>🎯 **Respuesta aproximada: 672 goles** (se admite un margen entre 650 y 700)</p></article>
+</section>
+<section class="closing">
+<h2>🥂 ¡Feliz 28 cumpleaños, Gerard!</h2>
+<p>Que esta nueva vuelta al sol venga cargada de Champions, escapadas de última hora, vermuts eternos... y muchísimos menos crujidos de espalda.</p>
+<p>🎉🔵🔴✈️</p>
+</section>
+</main>
+<footer>Ahora sí: que suene la música, que empiece la fiesta de verdad. 🎶</footer>
+<audio controls>
+  <source src="Barça.mp3" type="audio/mpeg">
+  Tu navegador no soporta el elemento de audio.
+</audio>
+
+<script>
+let score=0, done=0;
+function answer(btn, group){
+  if(group.dataset.answered) return;
+  group.dataset.answered="1";
+  const correct=btn.dataset.correct==="true";
+  const buttons=group.querySelectorAll(".option");
+  buttons.forEach(b=>b.disabled=true);
+  btn.classList.add(correct?"correct":"wrong");
+  if(correct){
+    const points=group.closest(".round").querySelector(".round-kicker")?.textContent==="RONDA" ? 10 : 10;
+    score += points;
+    document.getElementById("score").textContent=score;
+  }
+  done++;
+  document.getElementById("done").textContent=done;
+  const feedback=group.nextElementSibling;
+  feedback.classList.add("show");
+  feedback.querySelector(".result").textContent=correct?"✅ ¡Correcto!":"❌ ¡Fallaste!";
+}
+</script>
+</body>
+</html>
